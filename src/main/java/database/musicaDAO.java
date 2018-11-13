@@ -11,15 +11,33 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import model.Foto;
+import model.*;
 
 
 public class musicaDAO {
    
+    public List<Musica> listar(int usuarioId) throws SQLException, ClassNotFoundException  {
+        List<Musica> musicas = new ArrayList();
+        Connection connection = new ConexaoPostgreSQL().getConnection();
+        String sql = "select m.* from musica m "
+                + "inner join musica_usuario mu on mu.usuario_id = ? and m.id = mu.musica_id";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, usuarioId);
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            Musica m = mapear(rs);
+            musicas.add(m);
+        }
+        rs.close();
+        statement.close();
+        connection.close();
+        return musicas;
+    }
+    
    public List listar() throws SQLException, ClassNotFoundException  {
         List<Foto> fotos = new ArrayList();
         Connection connection = new ConexaoPostgreSQL().getConnection();
-        String sql = "select * from foto";
+        String sql = "select * from muaica";
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
@@ -86,5 +104,14 @@ public class musicaDAO {
                 connection.close();
             }
         }
+    }
+
+    private Musica mapear(ResultSet rs) throws SQLException {
+        Musica m = new Musica();
+        m.setId(rs.getInt("id"));
+        m.setNome(rs.getString("nome"));
+        m.setDescricao(rs.getString("descricao"));
+        m.setArquivo(rs.getString("arquivo"));
+        return m;
     }
 }

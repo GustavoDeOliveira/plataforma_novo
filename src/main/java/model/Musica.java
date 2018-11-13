@@ -15,6 +15,8 @@ public class Musica extends Entidade {
     private List<Usuario> autores;
     
     private List<Etiqueta> etiquetas;
+    
+    private String arquivo;
 
     public String getNome() {
         return nome;
@@ -54,5 +56,13 @@ public class Musica extends Entidade {
 
     public void setEtiquetas(List<Etiqueta> etiquetas) {
         this.etiquetas = etiquetas;
+    }
+
+    public String getArquivo() {
+        return arquivo;
+    }
+
+    public void setArquivo(String arquivo) {
+        this.arquivo = arquivo;
     }
 }
