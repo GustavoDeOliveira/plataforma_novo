@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 public abstract class Entidade implements Serializable {
 
@@ -56,5 +57,4 @@ public abstract class Entidade implements Serializable {
     public String toString() {
         return this.getClass().getName() + "[ id=" + id + " ]";
     }
-    
 }

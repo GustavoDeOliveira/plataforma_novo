@@ -46,6 +46,35 @@ public class UsuarioDAO {
         }
     }   
     
+    public int carregar(String usuario, String senha) throws SQLException, ClassNotFoundException {
+
+        
+        try (Connection connection = new ConexaoPostgreSQL().getConnection()) {
+            String sql = "select id from usuario where email = ? and senha = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, usuario);
+                statement.setString(2, senha);
+                ResultSet rs = statement.executeQuery();
+                
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    rs.close();
+                    statement.close();
+                    connection.close();
+                    return id;
+                    
+                }
+                rs.close();
+                statement.close();
+                connection.close();
+              
+            }
+        
+         
+          return -1;
+        }
+    }   
+    
 }
 
 

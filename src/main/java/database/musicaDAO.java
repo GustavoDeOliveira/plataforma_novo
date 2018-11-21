@@ -16,7 +16,7 @@ import model.*;
 
 public class musicaDAO {
    
-    public List<Musica> listar(int usuarioId) throws SQLException, ClassNotFoundException  {
+    public List<Musica> listarAutoral(int usuarioId) throws SQLException, ClassNotFoundException  {
         List<Musica> musicas = new ArrayList();
         Connection connection = new ConexaoPostgreSQL().getConnection();
         String sql = "select m.* from musica m "
@@ -34,24 +34,44 @@ public class musicaDAO {
         return musicas;
     }
     
-   public List listar() throws SQLException, ClassNotFoundException  {
-        List<Foto> fotos = new ArrayList();
+   public List<Musica> listar(int usuarioId) throws SQLException, ClassNotFoundException  {
+        List<Musica> musicas = new ArrayList();
+        List<Etiqueta> etiquetas = new ArrayList();
         Connection connection = new ConexaoPostgreSQL().getConnection();
-        String sql = "select * from muaica";
+        String sql = "select * from etiqueta_usuario where usuario_id = ? order by peso desc";
         PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1, usuarioId);
         ResultSet rs = statement.executeQuery();
         while (rs.next()) {
-            Foto f = new Foto();
-            f.setCod(rs.getInt("cod"));
-            f.setImagem(rs.getBytes("imagem"));
-            f.setLegenda(rs.getString("legenda"));
-            f.setGaleria(new GaleriaDAO().findById(rs.getInt("cod_galeria")));
-            fotos.add(f);
+            Etiqueta e = mapearEtiqueta(rs);
+            etiquetas.add(e);
         }
         rs.close();
         statement.close();
+        
+        sql = "select m.*, em.* from musica m "
+                + "inner join etiqueta_musica em on em.musica_id = m.id "
+                + "order by m.id, em.peso desc";
+        statement = connection.prepareStatement(sql);
+        rs = statement.executeQuery();
+        musicas = mapearMusicas(rs);
+        
+        rs.close();
+        statement.close();
         connection.close();
-        return fotos;
+        
+        List<Musica> m2 = new ArrayList<>();
+        for (Musica musica : musicas) {
+            for (EtiquetaUsuario etiqueta : etiquetas) {
+                for (EtiquetaMusica e2 : musica.getEtiquetas()) {
+                    if (e2.get) {
+                        m2.add(musica);
+                        break;
+                    }
+                }
+            }
+        }
+        return m2;
     }
    
    
@@ -113,5 +133,36 @@ public class musicaDAO {
         m.setDescricao(rs.getString("descricao"));
         m.setArquivo(rs.getString("arquivo"));
         return m;
+    }
+
+    private Etiqueta mapearEtiqueta(ResultSet rs) throws SQLException {
+        Etiqueta e = new Etiqueta();
+        e.setId(rs.getInt("id"));
+        e.setNome(rs.getString("nome"));
+        e.setPeso(rs.getInt("peso"));
+        return e;
+    }
+
+    private List<Musica> mapearMusicas(ResultSet rs) throws SQLException {
+        List<Musica> musicas = new ArrayList<>();
+        while(rs.next()) {
+            Musica m = new Musica();
+            m.setId(rs.getInt("m.id"));
+            m.setNome(rs.getString("m.nome"));
+            m.setDescricao(rs.getString("m.descricao"));
+            m.setArquivo(rs.getString("m.arquivo"));
+            Etiqueta e = new Etiqueta();
+            e.setId(rs.getInt("em.id"));
+            e.setNome(rs.getString("em.nome"));
+            e.setPeso(rs.getInt("em.peso"));
+            if (musicas.contains(m)) {
+                musicas.get(musicas.indexOf(m)).getEtiquetas().add(e);
+            } else {
+                m.setEtiquetas(new ArrayList<Etiqueta>());
+                m.getEtiquetas().add(e);
+                musicas.add(m);
+            }
+        }
+        return musicas;
     }
 }

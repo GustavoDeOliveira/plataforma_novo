@@ -55,7 +55,7 @@ public class IndexController {
                if (new UsuarioDAO().valida(login, senha)){
                    this.usuarioSessao.setUsuario(login);
                    this.usuarioSessao.setSenha(senha);
-                   this.result.redirectTo(GaleriaController.class).listar();                   
+                   this.result.redirectTo(MusicaController.class).listar();                   
                } else {
                    this.result.include("variable", "erro no login");
                    this.result.redirectTo(this).index();

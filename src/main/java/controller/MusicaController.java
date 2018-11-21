@@ -11,6 +11,7 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
 import database.musicaDAO;
 import database.GaleriaDAO;
+import database.UsuarioDAO;
 import java.sql.SQLException;
 import javax.inject.Inject;
 import model.Galeria;
@@ -21,18 +22,17 @@ import sessao.UsuarioSessao;
  * @author Israel Risso
  */
 @Controller
-class GaleriaController {
+class MusicaController {
 
     @Inject
     private Result result;
     @Inject
     private UsuarioSessao usuarioSessao;
   
-    @Path("/galeria/listar")
+    @Path("/musica/listar")
     public void listar() throws SQLException, ClassNotFoundException{
-        //return new GarotaDAO().listar();
-        result.include("galerias", new GaleriaDAO().listar());
-        //result.include("fotos", new musicaDAO().listar());
+        int id = new UsuarioDAO().carregar(usuarioSessao.getUsuario(), usuarioSessao.getSenha());
+        result.include("musicas", new musicaDAO().listar(id));
         
     }
     
@@ -41,7 +41,7 @@ class GaleriaController {
     @Path("/galeria/excluir/{cod}")
     public void excluir(int cod) throws SQLException, ClassNotFoundException{
         new GaleriaDAO().excluir(cod);
-        result.redirectTo(GaleriaController.class).listar();
+        result.redirectTo(MusicaController.class).listar();
     }
     
     @Path("/galeria/tela_adicionar")
@@ -54,7 +54,7 @@ class GaleriaController {
     @Post
     public void adicionar(Galeria galeria) throws SQLException, ClassNotFoundException{
         new GaleriaDAO().adicionar(galeria);
-        result.redirectTo(GaleriaController.class).listar();        
+        result.redirectTo(MusicaController.class).listar();        
     }
     
   

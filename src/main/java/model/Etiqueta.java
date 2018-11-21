@@ -4,13 +4,13 @@ public class Etiqueta extends Entidade {
     
     private String nome;
     
-    private Double peso;
+    private Integer peso;
 
-    public Double getPeso() {
+    public Integer getPeso() {
         return peso;
     }
 
-    public void setPeso(Double peso) {
+    public void setPeso(Integer peso) {
         this.peso = peso;
     }
 
