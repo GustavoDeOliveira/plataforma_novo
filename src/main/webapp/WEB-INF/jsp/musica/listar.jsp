@@ -11,63 +11,56 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
-       <nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-         <div class="navbar-header">
-             <a class="navbar-brand" href="#">Plataforma</a>
-        </div>
-        <ul class="nav navbar-nav">
-        </ul>
-                           
-        <ul class="nav navbar-nav" style="float:right">
-            <li style="float:right"><a href="/your-artifactid/index/destruir">sair</a></li>
-        </ul>
-    
-        
-        
-        
-</div>
-    
-    
-       
-</nav>
-
-        
-        
-        
-        
-        
-            <div class="container">
-                <div class="jumbotron">
-                    <h1>
-                        Listar Musicas
-                    </h1>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Plataforma</a>
                 </div>
-            </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="/your-artifactid/musica/listar">Explorar Plataforma</a></li>
+                    <li><a href="/your-artifactid/musica/adicionar">Adicionar Música</a></li>
+                </ul>
 
-        
-             <div class="container">
-                <div class="panel-group" id="accordion">
-                    <h4><b>Musicas</b></h4>
-              <c:forEach items="${musicas}" var="musica">
-              
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                          <table class="table table-striped" style="width:100%"> 
-                           <tr>
-                               <td>${musica.nome}</td>
-                               <td>${musica.descricao}</td>
-                           </tr>  
-                          </table>
-                        </h4>
-                    </div>
-                </div>        
-              </c:forEach>
+                <ul class="nav navbar-nav" style="float:right">
+                    <li style="float:right"><a href="/your-artifactid/index/destruir">sair</a></li>
+                </ul>  
+            </div>       
+        </nav>
+
+        <div class="container">
+            <div class="jumbotron musicas-recomendadas">
+                <h2>
+                    Músicas
+                </h2>
+                <p>Achamos umas músicas que se pá tu curte.</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="panel-group" id="accordion">
+                <h4><b>Músicas</b></h4>
+                <c:forEach items="${musicas}" var="musica">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <table class="table table-striped table-bordered" style="width:100%"> 
+                                    <tr>
+                                        <td>${musica.nome}</td>
+                                        <td>${musica.descricao}</td>
+                                    </tr>  
+                                    <tr>
+                                        <td colspan="2">
+                                            ${String.join(", ", musica.getNomesEtiquetas())}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </h4>
+                        </div>
+                    </div>        
+                </c:forEach>
             </div>
         </div>    
-        
-        
+
     </body>
-    <br><br><br><br><br><br><br><br>
 </html>

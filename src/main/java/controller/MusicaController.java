@@ -6,15 +6,18 @@
 package controller;
 
 import br.com.caelum.vraptor.Controller;
+import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Result;
-import database.musicaDAO;
-import database.GaleriaDAO;
+import database.EtiquetaDAO;
+import database.MusicaDAO;
 import database.UsuarioDAO;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.inject.Inject;
-import model.Galeria;
+import model.Musica;
+import model.Usuario;
 import sessao.UsuarioSessao;
 
 /**
@@ -32,28 +35,29 @@ class MusicaController {
     @Path("/musica/listar")
     public void listar() throws SQLException, ClassNotFoundException{
         int id = new UsuarioDAO().carregar(usuarioSessao.getUsuario(), usuarioSessao.getSenha());
-        result.include("musicas", new musicaDAO().listar(id));
+        result.include("musicas", new MusicaDAO().listar(id));
+        
+    }
+    
+    @Path("/musica/adicionar")
+    @Get
+    public void adicionar(){
         
     }
     
     
-    
-    @Path("/galeria/excluir/{cod}")
-    public void excluir(int cod) throws SQLException, ClassNotFoundException{
-        new GaleriaDAO().excluir(cod);
-        result.redirectTo(MusicaController.class).listar();
-    }
-    
-    @Path("/galeria/tela_adicionar")
-    public void tela_adicionar(){
-        
-    }
-    
-    
-    @Path("/galeria/adicionar")
+    @Path("/musica/adicionar")
     @Post
-    public void adicionar(Galeria galeria) throws SQLException, ClassNotFoundException{
-        new GaleriaDAO().adicionar(galeria);
+    public void adicionar(Musica musica, String etiquetasCSV) throws SQLException, ClassNotFoundException {
+        musica.setEtiquetas(new EtiquetaDAO().salvar(etiquetasCSV));
+        
+        ArrayList<Usuario> ulist = new ArrayList<>();
+        Usuario u = new Usuario();
+        u.setId(new UsuarioDAO().carregar(usuarioSessao.getUsuario(), usuarioSessao.getSenha()));
+        ulist.add(u);
+        musica.setAutores(ulist);
+        
+        new MusicaDAO().adicionar(musica);
         result.redirectTo(MusicaController.class).listar();        
     }
     

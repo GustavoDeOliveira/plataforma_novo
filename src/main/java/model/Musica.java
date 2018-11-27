@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,6 +57,15 @@ public class Musica extends Entidade {
 
     public void setEtiquetas(List<Etiqueta> etiquetas) {
         this.etiquetas = etiquetas;
+    }
+    
+    public List<String> getNomesEtiquetas() {
+        List<String> strings = new ArrayList<>();
+        if (etiquetas == null) return strings;
+        for(Etiqueta e : etiquetas) {
+            strings.add(e.toString());
+        }
+        return strings;
     }
 
     public String getArquivo() {
